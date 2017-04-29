@@ -1,0 +1,55 @@
+{
+  "name": "octopale",
+  "version": "0.0.1",
+  "description": "Markup builder for BEM projects with nested structure",
+  "main": "gulpfile.js",
+  "scripts": {
+    "start": "gulp",
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "browserslist": [
+    "ie >= 10",
+    "opera 12.1",
+    "> 2%",
+    "last 2 versions"
+  ],
+  "dependencies": {
+    "pale-blocks": "^0.5.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.7.7",
+    "browser-sync": "^2.18.8",
+    "del": "^2.2.2",
+    "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-bem-bundle-builder": "^0.1.2",
+    "gulp-bem-bundler-fs": "0.0.10",
+    "gulp-concat": "^2.6.1",
+    "gulp-csso": "^3.0.0",
+    "gulp-debug": "^3.1.0",
+    "gulp-flatten": "^0.3.1",
+    "gulp-hub": "github:frankwallis/gulp-hub#registry-init",
+    "gulp-if": "^2.0.2",
+    "gulp-imagemin": "^3.1.1",
+    "gulp-include": "^2.3.1",
+    "gulp-notify": "^3.0.0",
+    "gulp-nunjucks-html": "^2.0.0",
+    "gulp-postcss": "^6.3.0",
+    "gulp-posthtml": "^3.0.0",
+    "gulp-sourcemaps": "^2.4.1",
+    "gulp-typograf": "^3.0.0",
+    "gulp-uglify": "^2.1.0",
+    "minimist": "^1.2.0",
+    "postcss-calc": "^5.3.1",
+    "postcss-color-function": "^3.0.0",
+    "postcss-for": "^2.1.1",
+    "postcss-import": "^9.1.0",
+    "postcss-nested": "^1.0.0",
+    "postcss-reporter": "^3.0.0",
+    "postcss-simple-vars": "^3.0.0",
+    "postcss-url": "^6.0.4",
+    "posthtml-alt-always": "^1.0.1",
+    "posthtml-minifier": "^0.1.0"
+  }
+}

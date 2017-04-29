@@ -1,0 +1,15 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules
+
+# Distribute directories
+bundles/*/*
+!bundles/*/*.bemdecl.js
+
+# OS files
+.DS_Store
+Thumbs.db
