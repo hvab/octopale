@@ -4,7 +4,7 @@
   "description": "Markup builder for BEM projects with nested structure",
   "main": "gulpfile.js",
   "scripts": {
-    "start": "gulp",
+    "start": "gulp"
   },
   "keywords": [],
   "author": "",
