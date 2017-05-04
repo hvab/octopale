@@ -35,6 +35,9 @@ const csso = require('gulp-csso');
 
 const browserSync = require('browser-sync').create();
 
+/*
+gulp bemCss [--path static/catalog] [--prod]
+*/
 
 // Configs
 // const ROOT = process.cwd();
@@ -46,6 +49,7 @@ const CONFIG = require(path.resolve(CWD, 'config.js'));
 const builder = bundleBuilder(CONFIG.builder);
 
 // BEM Tasks
+// Styles
 gulp.task('bemCss', function() {
   return bundlerFs(path.resolve(CWD, CONFIG.bundles) + '/*')
     .pipe(builder({
@@ -76,15 +80,33 @@ gulp.task('bemCss', function() {
         .pipe(gulpIf(!PROD, sourcemaps.write('.')))
         .pipe(gulpIf(PROD, csso()))
         .pipe(gulp.dest(path.resolve(CWD, CONFIG.bundles, bundle.name)))
-    }))
+    }));
 });
 
+// Images
+gulp.task('bemImage', function() {
+  return bundlerFs(path.resolve(CWD, CONFIG.bundles) + '/*')
+    .pipe(builder({
+      image: bundle => bundle.src('image')
+        .pipe(gulpIf(PROD, imagemin()))
+        .pipe(flatten())
+        .pipe(gulp.dest(path.resolve(CWD, CONFIG.bundles, bundle.name)))
+    }));
+});
+
+// Clean bundles
 gulp.task('cleanBundles', function() {
   return del([
     path.resolve(CWD, CONFIG.bundles) + '/*/*',
     '!' + path.resolve(CWD, CONFIG.bundles) + '/*/*.bemdecl.js'
   ]);
 });
+
+// Build bundles
+gulp.task('buildBundles', gulp.series(
+  'cleanBundles',
+  gulp.parallel('bemCss', 'bemImage')
+));
 
 // gulp.task('bemJs', function() {
 //   return bundlerFs('bundles/*')
@@ -103,17 +125,6 @@ gulp.task('cleanBundles', function() {
 //     }))
 //     .pipe(debug({title: 'bemJs:'}))
 //     .pipe(gulp.dest(DEST));
-// });
-//
-// gulp.task('bemImage', function() {
-//   return bundlerFs('bundles/*')
-//     .pipe(builder({
-//       image: bundle => bundle.src('image')
-//         .pipe(gulpIf(!isDevelopment, imagemin()))
-//         .pipe(flatten())
-//     }))
-//     .pipe(debug({title: 'bemImage:'}))
-//     .pipe(gulp.dest(DEST+'/assets'));
 // });
 //
 // gulp.task('buildHtml', function() {
@@ -143,12 +154,6 @@ gulp.task('cleanBundles', function() {
 //     .pipe(debug({title: 'buildHtml:'}))
 //     .pipe(gulp.dest(DEST));
 // });
-//
-//
-// gulp.task('build', gulp.series(
-//   'clean',
-//   gulp.parallel('bemCss', 'bemJs', 'bemImage', 'buildHtml')
-// ));
 //
 // gulp.task('watch', function() {
 //   gulp.watch([
