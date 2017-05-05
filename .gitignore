@@ -7,8 +7,8 @@ npm-debug.log*
 node_modules
 
 # Distribute directories
-bundles/*/*
-!bundles/*/*.bemdecl.js
+**/bundles/*/*
+!**/bundles/*/*.bemdecl.js
 
 # OS files
 .DS_Store
