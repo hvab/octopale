@@ -17,12 +17,17 @@ Basic developer usage
 export PATH=./node_modules/.bin:$PATH
 
 # build
-gulp bemBuild [--path static/catalog] [--prod]
+gulp bemBuild [--path projects/stub] [--prod]
 
 # build and watch
-gulp bemWatch [--path static/catalog] [--prod]
-
+gulp bemWatch [--path projects/stub] [--prod]
 ```
+
+## API
+
+`--path` is for nested projects.
+
+`--prod` is for production (inline assets, minify CSS and images, off sourcemaps).
 
 ## Работа с картинками и другими сопутсвующими файлами
 
