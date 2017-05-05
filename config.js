@@ -14,4 +14,8 @@ module.exports = {
   },
 
   bundles: 'bundles',
+
+  // browserslist: [
+  //   "last 2 versions"
+  // ],
 };

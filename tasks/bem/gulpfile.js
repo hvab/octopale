@@ -37,6 +37,8 @@ gulp bemWatch [--path static/catalog] [--prod]
 const CWD = argv.path || '';
 const PROD = argv.prod || false;
 const CONFIG = require(path.resolve(CWD, 'config.js'));
+var packageJson = require(path.resolve('./', 'package.json'));
+const BROWSERSLIST = CONFIG.browserslist || packageJson.browserslist;
 
 // BEM Builder
 const builder = bundleBuilder(CONFIG.builder);
@@ -58,7 +60,7 @@ gulp.task('bemCss', function() {
           postcssUrl({
             url: PROD ? 'inline' : 'copy'
           }),
-          autoprefixer(),
+          autoprefixer({browsers: BROWSERSLIST}),
           postcssReporter()
         ], {
           to: path.resolve(CWD, CONFIG.bundles, bundle.name, bundle.name + '.css'),
