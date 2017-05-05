@@ -13,13 +13,7 @@ const debug = require('gulp-debug');
 const flatten = require('gulp-flatten');
 const gulpIf = require('gulp-if');
 const imagemin = require('gulp-imagemin');
-const include = require('gulp-include');
-const notify = require('gulp-notify');
-const nunjucks = require('gulp-nunjucks-html');
-const posthtml = require('gulp-posthtml');
 const sourcemaps = require('gulp-sourcemaps');
-const typograf = require('gulp-typograf');
-const uglify = require('gulp-uglify');
 
 const postcss = require('gulp-postcss');
 const postcssImport = require('postcss-import');
@@ -32,8 +26,6 @@ const postcssUrl = require('postcss-url');
 const autoprefixer = require('autoprefixer');
 const postcssReporter = require('postcss-reporter');
 const csso = require('gulp-csso');
-
-const browserSync = require('browser-sync').create();
 
 /*
 gulp bemBuild [--path static/catalog] [--prod]
@@ -70,17 +62,12 @@ gulp.task('bemCss', function() {
           postcssReporter()
         ], {
           to: path.resolve(CWD, CONFIG.bundles, bundle.name, bundle.name + '.css'),
-        })).on('error', notify.onError(function(err) {
-          return {
-            title: 'PostCSS',
-            message: err.message,
-            sound: 'Blow'
-          };
         }))
         .pipe(concat(bundle.name + '.css'))
         .pipe(gulpIf(!PROD, sourcemaps.write('.')))
         .pipe(gulpIf(PROD, csso()))
         .pipe(gulp.dest(path.resolve(CWD, CONFIG.bundles, bundle.name)))
+        .pipe(debug({title: 'bemCss:'}))
     }));
 });
 
@@ -92,6 +79,7 @@ gulp.task('bemImage', function() {
         .pipe(gulpIf(PROD, imagemin()))
         .pipe(flatten())
         .pipe(gulp.dest(path.resolve(CWD, CONFIG.bundles, bundle.name)))
+        .pipe(debug({title: 'bemImage:'}))
     }));
 });
 
@@ -146,6 +134,7 @@ function getTechs(techs) {
   var str = techs.map(function(name) {
     return name;
   });
+
   return str.join('|');
 }
 
