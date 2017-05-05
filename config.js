@@ -9,7 +9,6 @@ module.exports = {
     ],
     techMap: {
       css: ['post.css', 'css'],
-      js: ['js'],
       image: ['jpg', 'png', 'svg']
     }
   },

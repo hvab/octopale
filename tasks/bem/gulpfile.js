@@ -36,7 +36,8 @@ const csso = require('gulp-csso');
 const browserSync = require('browser-sync').create();
 
 /*
-gulp bemCss [--path static/catalog] [--prod]
+gulp bemBuild [--path static/catalog] [--prod]
+gulp bemWatch [--path static/catalog] [--prod]
 */
 
 // Configs
@@ -103,110 +104,55 @@ gulp.task('cleanBundles', function() {
 });
 
 // Build bundles
-gulp.task('buildBundles', gulp.series(
+gulp.task('bemBuild', gulp.series(
   'cleanBundles',
   gulp.parallel('bemCss', 'bemImage')
 ));
 
-// gulp.task('bemJs', function() {
-//   return bundlerFs('bundles/*')
-//     .pipe(builder({
-//       js: bundle => bundle.src('js')
-//         .pipe(gulpIf(isDevelopment, sourcemaps.init()))
-//         .pipe(include({
-//           includePaths: [
-//             __dirname + '/node_modules',
-//             __dirname + '/.'
-//           ]
-//         }))
-//         .pipe(concat(bundle.name + '.js'))
-//         .pipe(gulpIf(isDevelopment, sourcemaps.write('.')))
-//         .pipe(gulpIf(!isDevelopment, uglify()))
-//     }))
-//     .pipe(debug({title: 'bemJs:'}))
-//     .pipe(gulp.dest(DEST));
-// });
-//
-// gulp.task('buildHtml', function() {
-//   return gulp.src('pages/**/*.html')
-//     .pipe(nunjucks({
-//       searchPaths: ['./']
-//     })).on('error', notify.onError(function(err) {
-//       return {
-//         title: 'Nunjucks',
-//         message: err.message,
-//         sound: 'Blow'
-//       };
-//     }))
-//     .pipe(typograf({
-//       locale: ['ru', 'en-US'],
-//       mode: 'digit'
-//     }))
-//     .pipe(gulpIf(!isDevelopment, posthtml([
-//       require('posthtml-alt-always')(),
-//       require('posthtml-minifier')({
-//         removeComments: true,
-//         collapseWhitespace: true,
-//         minifyJS: true
-//       })
-//     ])))
-//     .pipe(flatten())
-//     .pipe(debug({title: 'buildHtml:'}))
-//     .pipe(gulp.dest(DEST));
-// });
-//
-// gulp.task('watch', function() {
-//   gulp.watch([
-//     'blocks/**/*.deps.js',
-//     'bundles/**/*.bemdecl.js'
-//   ], gulp.parallel('bemCss', 'bemJs', 'bemImage'));
-//
-//   gulp.watch([
-//     'pages/**/*.html',
-//     'templates/**/*.html'
-//   ], gulp.series('buildHtml'));
-//
-//   gulp.watch('blocks/**/*.css', gulp.series('bemCss'));
-//
-//   gulp.watch([
-//     'blocks/**/*.js',
-//     '!blocks/**/*.deps.js'
-//   ], gulp.series('bemJs'));
-//
-//   gulp.watch('blocks/**/*.+(png|jpg|svg)', gulp.parallel('bemCss','bemImage'));
-// });
-//
-// gulp.task('serve', function() {
-//   browserSync.init({
-//     logPrefix: 'palecore',
-//     server: DEST,
-//     port: isDevelopment ? 3000 : 8080,
-//     notify: false,
-//     open: false,
-//     ui: false,
-//     tunnel: false,
-//   });
-//
-//   browserSync.watch([
-//     DEST+'/**/*.*',
-//     '!'+DEST+'/**/*.+(css|css.map)'
-//   ]).on('change', browserSync.reload);
-//
-//   browserSync.watch(DEST+'/**/*.css', function (event, file) {
-//     if (event === 'change') {
-//       browserSync.reload(DEST+'/**/*.css');
-//     }
-//   });
-// });
-//
-// gulp.task('dev', gulp.series('build', gulp.parallel('watch', 'serve')));
-// gulp.task('prod', gulp.series('build', 'serve'));
-//
-// gulp.task('default', gulp.series(isDevelopment ? 'dev' : 'prod'));
+// Watcher
+gulp.task('bemWatcher', function() {
+  gulp.watch(
+    path.resolve(CWD, CONFIG.bundles) + '/**/*.bemdecl.js',
+    gulp.parallel('bemCss', 'bemImage')
+  );
+
+  gulp.watch(
+    getWatchLayers(CONFIG.builder.levels, '/**/*.deps.js', CWD),
+    gulp.parallel('bemCss', 'bemImage')
+  );
+
+  gulp.watch(
+    getWatchLayers(CONFIG.builder.levels, '/**/*.+(' + getTechs(CONFIG.builder.techMap.css) + ')', CWD),
+    gulp.series('bemCss')
+  );
+
+  gulp.watch(
+    getWatchLayers(CONFIG.builder.levels, '/**/*.+(' + getTechs(CONFIG.builder.techMap.image) + ')', CWD),
+    gulp.parallel('bemImage', 'bemCss')
+  );
+});
+
+// Utils
+function getWatchLayers(levels, techGlob, cwd) {
+  var str = [];
+  levels.forEach(function(item, i , arr) {
+    str[i] = path.resolve(cwd, item) + techGlob;
+  });
+
+  return str;
+}
+
+function getTechs(techs) {
+  var str = techs.map(function(name) {
+    return name;
+  });
+  return str.join('|');
+}
+
+// Build
+gulp.task('bemWatch', gulp.series('bemBuild', 'bemWatcher'));
 
 gulp.task('default', function(cb) {
-  console.log(path.resolve(CWD, CONFIG.bundles));
-  console.dir(PROD);
-
+  // console.log('');
   cb();
 });

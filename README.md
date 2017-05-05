@@ -15,7 +15,13 @@ npm install
 Basic developer usage
 ```sh
 export PATH=./node_modules/.bin:$PATH
-npm start # gulp
+
+# build
+gulp bemBuild [--path static/catalog] [--prod]
+
+# build and watch
+gulp bemWatch [--path static/catalog] [--prod]
+
 ```
 
 ## Работа с картинками и другими сопутсвующими файлами
