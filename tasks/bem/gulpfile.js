@@ -40,13 +40,14 @@ const packageJson = require(path.resolve('./', 'package.json'));
 const BROWSERSLIST = CONFIG.browserslist || packageJson.browserslist;
 const BUNDLES = 'bundles';
 
+CONFIG.techMap = {
+  css: ['post.css', 'css'],
+  image: ['jpg', 'png', 'svg']
+};
 // BEM Builder
 const builder = bundleBuilder({
   levels: CONFIG.levels,
-  techMap: {
-    css: ['post.css', 'css'],
-    image: ['jpg', 'png', 'svg']
-  }
+  techMap: CONFIG.techMap
 });
 
 // BEM Tasks
@@ -113,17 +114,17 @@ gulp.task('bemWatcher', function() {
   );
 
   gulp.watch(
-    getWatchLayers(CONFIG.builder.levels, '/**/*.deps.js', CWD),
+    getWatchLayers(CONFIG.levels, '/**/*.deps.js', CWD),
     gulp.parallel('bemCss', 'bemImage')
   );
 
   gulp.watch(
-    getWatchLayers(CONFIG.builder.levels, '/**/*.+(' + getTechs(CONFIG.builder.techMap.css) + ')', CWD),
+    getWatchLayers(CONFIG.levels, '/**/*.+(' + getTechs(CONFIG.techMap.css) + ')', CWD),
     gulp.series('bemCss')
   );
 
   gulp.watch(
-    getWatchLayers(CONFIG.builder.levels, '/**/*.+(' + getTechs(CONFIG.builder.techMap.image) + ')', CWD),
+    getWatchLayers(CONFIG.levels, '/**/*.+(' + getTechs(CONFIG.techMap.image) + ')', CWD),
     gulp.parallel('bemImage', 'bemCss')
   );
 });

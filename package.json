@@ -41,8 +41,6 @@
     "postcss-nested": "^1.0.0",
     "postcss-reporter": "^3.0.0",
     "postcss-simple-vars": "^3.0.0",
-    "postcss-url": "^6.0.4",
-    "posthtml-alt-always": "^1.0.1",
-    "posthtml-minifier": "^0.1.0"
+    "postcss-url": "^6.0.4"
   }
 }
