@@ -33,20 +33,26 @@ gulp bemWatch [--path static/catalog] [--prod]
 */
 
 // Configs
-// const ROOT = process.cwd();
 const CWD = argv.path || '';
 const PROD = argv.prod || false;
 const CONFIG = require(path.resolve(CWD, 'config.js'));
-var packageJson = require(path.resolve('./', 'package.json'));
+const packageJson = require(path.resolve('./', 'package.json'));
 const BROWSERSLIST = CONFIG.browserslist || packageJson.browserslist;
+const BUNDLES = 'bundles';
 
 // BEM Builder
-const builder = bundleBuilder(CONFIG.builder);
+const builder = bundleBuilder({
+  levels: CONFIG.levels,
+  techMap: {
+    css: ['post.css', 'css'],
+    image: ['jpg', 'png', 'svg']
+  }
+});
 
 // BEM Tasks
 // Styles
 gulp.task('bemCss', function() {
-  return bundlerFs(path.resolve(CWD, CONFIG.bundles) + '/*')
+  return bundlerFs(path.resolve(CWD, BUNDLES) + '/*')
     .pipe(builder({
       css: bundle => bundle.src('css')
         .pipe(gulpIf(!PROD, sourcemaps.init()))
@@ -63,24 +69,24 @@ gulp.task('bemCss', function() {
           autoprefixer({browsers: BROWSERSLIST}),
           postcssReporter()
         ], {
-          to: path.resolve(CWD, CONFIG.bundles, bundle.name, bundle.name + '.css'),
+          to: path.resolve(CWD, BUNDLES, bundle.name, bundle.name + '.css'),
         }))
         .pipe(concat(bundle.name + '.css'))
         .pipe(gulpIf(!PROD, sourcemaps.write('.')))
         .pipe(gulpIf(PROD, csso()))
-        .pipe(gulp.dest(path.resolve(CWD, CONFIG.bundles, bundle.name)))
+        .pipe(gulp.dest(path.resolve(CWD, BUNDLES, bundle.name)))
         .pipe(debug({title: 'bemCss:'}))
     }));
 });
 
 // Images
 gulp.task('bemImage', function() {
-  return bundlerFs(path.resolve(CWD, CONFIG.bundles) + '/*')
+  return bundlerFs(path.resolve(CWD, BUNDLES) + '/*')
     .pipe(builder({
       image: bundle => bundle.src('image')
         .pipe(gulpIf(PROD, imagemin()))
         .pipe(flatten())
-        .pipe(gulp.dest(path.resolve(CWD, CONFIG.bundles, bundle.name)))
+        .pipe(gulp.dest(path.resolve(CWD, BUNDLES, bundle.name)))
         .pipe(debug({title: 'bemImage:'}))
     }));
 });
@@ -88,8 +94,8 @@ gulp.task('bemImage', function() {
 // Clean bundles
 gulp.task('cleanBundles', function() {
   return del([
-    path.resolve(CWD, CONFIG.bundles) + '/*/*',
-    '!' + path.resolve(CWD, CONFIG.bundles) + '/*/*.bemdecl.js'
+    path.resolve(CWD, BUNDLES) + '/*/*',
+    '!' + path.resolve(CWD, BUNDLES) + '/*/*.bemdecl.js'
   ]);
 });
 
@@ -102,7 +108,7 @@ gulp.task('bemBuild', gulp.series(
 // Watcher
 gulp.task('bemWatcher', function() {
   gulp.watch(
-    path.resolve(CWD, CONFIG.bundles) + '/**/*.bemdecl.js',
+    path.resolve(CWD, BUNDLES) + '/**/*.bemdecl.js',
     gulp.parallel('bemCss', 'bemImage')
   );
 
